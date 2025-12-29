@@ -1,13 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:qizing_flutter/question.dart';
 
-void main() => runApp(Quizzler());
+void main() => runApp(Quizzing());
 
-class Quizzler extends StatelessWidget {
+class Quizzing extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        backgroundColor: Colors.teal[600],
+        backgroundColor: Colors.blueGrey,
+        appBar: AppBar(
+          backgroundColor: Colors.blueGrey[600],
+          title: Text(
+            'Quizzing',
+            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+          ),
+          centerTitle: true,
+        ),
         body: SafeArea(
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 10.0),
@@ -25,6 +34,41 @@ class QuizPage extends StatefulWidget {
 }
 
 class _QuizPageState extends State<QuizPage> {
+  //List of the Icon
+  List<Icon> scoreTracker = [
+    // Icon(Icons.check, color: Colors.green),
+    // Icon(Icons.close, color: Colors.red),
+  ];
+
+  // List<String> question = [
+  //   'You can Lead a goat down stair but not up stair.',
+  //   'Approximately one quarter of human bones are in the feet.',
+  //   'A slug\'s  blood color are green.',
+  // ];
+
+  // Question q1 = Question(
+  //   questionText: 'You can Lead a goat down stair but not up stair.',
+  //   questionAnswer: true,
+  // );
+  // List<bool> answer = [false, true, true];
+
+  List<Question> questionBank = [
+    Question(
+      questionText: 'You can Lead a goat down stair but not up stair.',
+      questionAnswer: false,
+    ),
+    Question(
+      questionText: 'Approximately one quarter of human bones are in the feet.',
+      questionAnswer: true,
+    ),
+    Question(
+      questionText: 'A slug\'s  blood color are green.',
+      questionAnswer: true,
+    ),
+  ];
+
+  int questionNumber = 0;
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -37,9 +81,13 @@ class _QuizPageState extends State<QuizPage> {
             padding: EdgeInsets.all(10.0),
             child: Center(
               child: Text(
-                'This is where the question text will go.',
+                questionBank[questionNumber].questionText,
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 25.0, color: Colors.white),
+                style: TextStyle(
+                  fontSize: 25.0,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ),
@@ -54,7 +102,19 @@ class _QuizPageState extends State<QuizPage> {
                 style: TextStyle(color: Colors.white, fontSize: 20.0),
               ),
               onPressed: () {
-                print('user pick True Everybody');
+                bool correctAnswer =
+                    questionBank[questionNumber].questionAnswer;
+                if (correctAnswer == true) {
+                  scoreTracker.add(Icon(Icons.check, color: Colors.green));
+                  print('user got it right');
+                } else {
+                  scoreTracker.add(Icon(Icons.close, color: Colors.red));
+                  print('user got it wrong');
+                }
+
+                setState(() {
+                  questionNumber++;
+                });
               },
             ),
           ),
@@ -69,13 +129,27 @@ class _QuizPageState extends State<QuizPage> {
                 style: TextStyle(fontSize: 20.0, color: Colors.white),
               ),
               onPressed: () {
-                print('user pick False Everybody');
+                setState(() {
+                  bool correctAnswer =
+                      questionBank[questionNumber].questionAnswer;
+                  if (correctAnswer == false) {
+                    scoreTracker.add(Icon(Icons.check, color: Colors.green));
+                    print('user got it right');
+                  } else {
+                    scoreTracker.add(Icon(Icons.close, color: Colors.red));
+                    print('user got it wrong');
+                  }
+
+                  questionNumber++;
+                });
+
                 //The user picked false.
               },
             ),
           ),
         ),
         //TODO: Add a Row here as your score keeper
+        Row(children: scoreTracker),
       ],
     );
   }
